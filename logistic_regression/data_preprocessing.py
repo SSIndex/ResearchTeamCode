@@ -63,10 +63,10 @@ class DataPreProcessor:
         column_transform is a dataframe with columns named "Pregunta", "Dimension"
         '''
         if not self.transformed:
-            group_counts = { val: count for val, count in column_transform["Dimension"].value_counts().iteritems() }
+            group_counts = { val: count for val, count in column_transform['Dimension'].value_counts().iteritems() }
             additive_combine_df = pd.DataFrame()
             for group in group_counts.keys():
-                cols_in_group = self.data[self.data['Dimension'] == group]['Pregunta'].unique()
+                cols_in_group = column_transform[column_transform['Dimension'] == group]['Pregunta'].unique()
                 additive_combine_df[group] = self.data[cols_in_group].sum(axis=1)
             self.data = additive_combine_df
         return self.data
