@@ -2,6 +2,7 @@
 Data preprocessing file. We asume that data comes from pandas dataFrames
 '''
 import pandas as pd
+from itertools import combinations_with_replacement
 
 
 class DataPreProcessor:
@@ -68,6 +69,30 @@ class DataPreProcessor:
             for group in group_counts.keys():
                 cols_in_group = column_transform[column_transform['Dimension'] == group]['Pregunta'].unique()
                 additive_combine_df[group] = self.data[cols_in_group].sum(axis=1)
+                additive_combine_df[group] = self.normalize_sum(additive_combine_df[group], group_counts[group])
             self.data = additive_combine_df
         return self.data
 
+    @staticmethod
+    def normalize_sum(series, count):
+        '''
+        Combine data so it converts data from range K..5*K to 1..5
+        '''
+
+        sums = list(set(map(sum, combinations_with_replacement(range(1, 6), count))))
+        sums.sort()
+        transform = {}
+        middle = len(sums) // 2
+        
+        likert_value = 1
+        r_count = 0
+        for idx, s in enumerate(sums):
+            # print(f'{idx}: {s} -- {r_count}, {likert_value}')
+            if r_count == count:
+                r_count = 0
+                likert_value += 1
+            if middle == idx:
+                r_count = count - 1
+            r_count += 1
+            transform[s] = likert_value
+        return series.apply(lambda x: transform[x])
