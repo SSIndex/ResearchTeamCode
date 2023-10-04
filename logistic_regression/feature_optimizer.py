@@ -19,7 +19,7 @@ class FeatureOptimizer:
     self._x_train, self._x_test, self._y_train, self._y_test = train_test_split(
       X,
       Y,
-      test_size=0.2, 
+      test_size=0.2,
       random_state=42
     )
     self.scores = scores
@@ -120,11 +120,13 @@ class FeatureOptimizer:
     return fig.show()
 
   def include_num_predictors(self, func):
-    def predictors_included(*args):
-      return func(*args, num_regressors=len(self._x_train.columns))
+    def predictors_included(*a, **kw):
+      kw.update({'num_regressors': len(self._x_train.columns)})
+      return func(*a, **kw)
     return predictors_included
   
   def include_num_observations(self, func):
-    def observations_included(*args):
-      return func(*args, num_observations=len(self._x_train.index))
+    def observations_included(*a, **kw):
+      kw.update({'num_observations': len(self._x_train.index)})
+      return func(*a, **kw)
     return observations_included
