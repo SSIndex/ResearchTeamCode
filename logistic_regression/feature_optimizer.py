@@ -115,3 +115,13 @@ class FeatureOptimizer:
     fig = bar(self.frequencies, x='Dimension', y='Frecuencia', title=f'Top Predictores de {self.question_to_predict}')
 
     return fig.show()
+
+  def include_num_predictors(self, func):
+    def predictors_included(*args):
+      return func(*args, num_regressors=len(self._x_train.columns))
+    return predictors_included
+  
+  def include_num_observations(self, func):
+    def observations_included(*args):
+      return func(*args, num_observations=len(self._x_train.index))
+    return observations_included
