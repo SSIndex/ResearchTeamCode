@@ -123,10 +123,12 @@ class FeatureOptimizer:
     def predictors_included(*a, **kw):
       kw.update({'num_regressors': len(self._x_train.columns)})
       return func(*a, **kw)
+    predictors_included.__name__ = func.__name__
     return predictors_included
   
   def include_num_observations(self, func):
     def observations_included(*a, **kw):
       kw.update({'num_observations': len(self._x_train.index)})
       return func(*a, **kw)
+    observations_included.__name__ = func.__name__
     return observations_included
