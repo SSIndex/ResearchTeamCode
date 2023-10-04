@@ -26,6 +26,9 @@ class FeatureOptimizer:
     self.stats = pd.DataFrame(columns=['model_name', *self._x_train.columns, *map(lambda x: x.__name__, scores)])
     self.frequencies = None
   
+  def add_scores(self, *scores):
+    self.scores += scores
+  
   def fit(self, metric, max_value=True):
     '''
     Return and set stats of the optimization process according to a given metric and if its optimal value is the maximum or minimum
