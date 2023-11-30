@@ -29,7 +29,7 @@ class FeatureOptimizer:
   def add_scores(self, *scores):
     self.scores += scores
   
-  def fit(self, metric, max_value=True):
+  def fit(self, metric, max_value=True, bound_val=0):
     '''
     Return and set stats of the optimization process according to a given metric and if its optimal value is the maximum or minimum
     '''
@@ -39,8 +39,12 @@ class FeatureOptimizer:
     self.stats = self.stats[self.stats[self.scores[0].__name__] > -1]
 
     sequence_metric = self.stats[metric]
-    best_value = sequence_metric.max() if max_value else sequence_metric.min()
-    self.stats = self.stats[self.stats[metric] == best_value]
+    if max_value:
+      best_value = sequence_metric.max() - bound_val
+      self.stats = self.stats[self.stats[metric] >= best_value]
+    else:
+      best_value = sequence_metric.min() + bound_val
+      self.stats = self.stats[self.stats[metric] <= best_value]
     return self.stats
   
   def optimize(self, questions_included, questions_available):
